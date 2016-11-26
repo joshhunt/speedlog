@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongodb = require('mongodb');
 const cors = require('cors');
+const _ = require('lodash');
 
 
 const ObjectID = mongodb.ObjectID;
@@ -57,6 +58,8 @@ app.get('/results', function(req, res) {
   db.collection(RESULTS_COLLECTION).find({}).toArray((err, docs) => {
     if (err) { return next(err); }
 
-    res.status(200).json(docs);
+    const sorted = _.sortBy(docs, d => new Date(d.timestamp));
+
+    res.status(200).json(sorted);
   });
 });
