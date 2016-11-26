@@ -3,9 +3,14 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongodb = require('mongodb');
+const cors = require('cors');
+
+
 const ObjectID = mongodb.ObjectID;
 
 const app = express();
+
+app.use(cors());
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
