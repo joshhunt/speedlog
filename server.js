@@ -9,6 +9,8 @@ const app = express();
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
+const RESULTS_COLLECTION = 'results';
+
 // Create a database variable outside of the database connection callback to reuse the connection pool in your app.
 let db;
 
@@ -34,4 +36,22 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
 
 app.get('/', (req, res) => {
   res.send('cool');
+});
+
+app.post('/results', (req, res, next) => {
+  const newRecord = req.body;
+
+  db.collection(RESULTS_COLLECTION).insertOne(newRecord, (err, doc) => {
+    if (err) { return next(err); }
+
+    res.status(201).json(doc.ops[0]);
+  });
+});
+
+app.get('/results', function(req, res) {
+  db.collection(RESULTS_COLLECTION).find({}).toArray((err, docs) => {
+    if (err) { return next(err); }
+
+    res.status(200).json(docs);
+  });
 });
