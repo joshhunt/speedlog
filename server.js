@@ -20,28 +20,37 @@ const RESULTS_COLLECTION = 'results';
 // Create a database variable outside of the database connection callback to reuse the connection pool in your app.
 let db;
 
-// Connect to the database before starting the application server.
-mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
-  if (err) {
-    console.log('Unable to connect to MongoDB')
-    console.log(err);
-    process.exit(1);
-  }
-
-  // Save database object from the callback for reuse.
-  db = database;
-  console.log('Database connection ready');
-
+function startApp() {
   // Initialize the app.
   const port = process.env.PORT || 8080;
   const server = app.listen(port, () => {
     const port = server.address().port;
     console.log('App now running on port', port);
   });
-});
+}
+
+if (process.env.MONGODB_URI) {
+  // Connect to the database before starting the application server.
+  mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
+    if (err) {
+      console.log('Unable to connect to MongoDB')
+      console.log(err);
+      process.exit(1);
+    }
+
+    // Save database object from the callback for reuse.
+    db = database;
+    console.log('Database connection ready');
+
+    startApp();
+  });
+} else {
+  console.log('MongoDB not available, starting without it');
+  startApp();
+}
 
 app.get('/', (req, res) => {
-  res.send('cool');
+  res.sendFile('./results.html', { root: './' });
 });
 
 app.post('/results', (req, res, next) => {
