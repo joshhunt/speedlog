@@ -13,7 +13,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '5mb'}));
 
 const RESULTS_COLLECTION = 'results';
 
@@ -64,11 +64,27 @@ app.post('/results', (req, res, next) => {
 });
 
 app.get('/results', function(req, res) {
-  db.collection(RESULTS_COLLECTION).find({}).toArray((err, docs) => {
+  db.collection(RESULTS_COLLECTION).find({}).toArray((err, results) => {
     if (err) { return next(err); }
 
-    const sorted = _.sortBy(docs, d => new Date(d.timestamp));
+    const markers = [
+      {
+        timestamp: results.find(d => d._id === '583903393033b1001134f615').timestamp,
+        label: 'Speedlog created'
+      }, {
+        timestamp: '2016-11-26T12:11:11.831Z',
+        label: 'Restarted router'
+      }
+    ]
 
-    res.status(200).json(sorted);
+    res.status(200).json({
+      results: _.sortBy(results, d => new Date(d.timestamp)),
+      markers,
+    });
   });
+});
+
+app.post('/health', (req, res) => {
+  console.log(req.body);
+  res.status(200).send('ok');
 });

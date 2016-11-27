@@ -6,6 +6,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/metrics-graphics/2.10.1/metricsgraphics.min.js"></script>
 
+    <script src="/percentageData.js"></script>
+
     <link rel="icon" href="/Artboard128w.png" sizes="128x128">
     <link rel="icon" href="/Artboard64w.png" sizes="64x64">
     <link rel="icon" href="/Artboard32w.png" sizes="32x32">
@@ -34,8 +36,10 @@
   <body>
     <div id="download"></div>
     <div class="legend"></div>
+    <div id="markers"></div>
 
     <script>
+
       const round = n => Math.round(n * 100) / 100;
       const convert = n => round(n / 1000000);
 
@@ -44,25 +48,25 @@
         : '/results';
 
       d3.json(resultsUrl, function(data) {
-        data = data.map(d => {
+        window.data = data;
+
+        const results = data.results.map(d => {
           return Object.assign({}, d, {
             download: convert(d.download),
             upload: convert(d.upload),
             timestamp: new Date(d.timestamp),
           })
-        })
+        });
 
-        console.log(data);
+        const markers = data.markers.map(m => Object.assign({}, m, { timestamp: new Date(m.timestamp) }));
 
         MG.data_graphic({
           title: "Exetel Opticomm Fibre Speed",
-          data: data,
+          data: results,
           width: document.body.clientWidth - 20,
           height: 300,
           animate_on_load: true,
           right: 40,
-          area: false,
-          target: document.getElementById('download'),
           x_accessor: 'timestamp',
           y_accessor: ['download', 'upload'],
           aggregate_rollover: true,
@@ -70,6 +74,8 @@
           legend: ['Download','Upload'],
           legend_target: '.legend',
           y_label: 'Mbps',
+          markers: markers,
+          target: document.getElementById('download')
         });
       });
     </script>
