@@ -78,10 +78,10 @@ app.get('/results', function(req, res) {
       }, {
         timestamp: '2016-11-26T12:11:11.831Z',
         label: 'Restarted router'
-      }, {
-        timestamp: findResult(results, '583acb0c5621b50011e2bcfa').timestamp,
-        label: 'Run every 10 mins'
-      }
+      }//, {
+      //   timestamp: findResult(results, '583acb0c5621b50011e2bcfa').timestamp,
+      //   label: 'Run every 10 mins'
+      // }
     ];
 
     res.status(200).json({
