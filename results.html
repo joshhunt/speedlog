@@ -6,8 +6,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/metrics-graphics/2.10.1/metricsgraphics.min.js"></script>
 
-    <script src="/percentageData.js"></script>
-
     <link rel="icon" href="/Artboard128w.png" sizes="128x128">
     <link rel="icon" href="/Artboard64w.png" sizes="64x64">
     <link rel="icon" href="/Artboard32w.png" sizes="32x32">
@@ -61,7 +59,7 @@
         const markers = data.markers.map(m => Object.assign({}, m, { timestamp: new Date(m.timestamp) }));
 
         MG.data_graphic({
-          title: "Exetel Opticomm Fibre Speed",
+          title: "Actual Internet Speeds",
           data: results,
           width: document.body.clientWidth - 20,
           height: 300,
