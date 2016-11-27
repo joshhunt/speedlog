@@ -63,24 +63,30 @@ app.post('/results', (req, res, next) => {
   });
 });
 
+const findResult = (results, id) => {
+  return _.find(results, d => d._id.toString() === id) || {};
+}
+
 app.get('/results', function(req, res) {
   db.collection(RESULTS_COLLECTION).find({}).toArray((err, results) => {
     if (err) { return next(err); }
 
     const markers = [
       {
+        timestamp: findResult(results, '583903393033b1001134f615').timestamp,
+        label: 'Speedlog created'
+      }, {
         timestamp: '2016-11-26T12:11:11.831Z',
         label: 'Restarted router'
+      }, {
+        timestamp: findResult(results, '583acb0c5621b50011e2bcfa').timestamp,
+        label: 'Run every 10 mins'
       }
     ];
 
-    const firstResult = _.find(results, d => d._id.valueOf() === '583903393033b1001134f615');
-    if (firstResult) {
-      markers.push({
-        timestamp: firstResult.timestamp,
-        label: 'Speedlog created'
-      });
-    }
+    // "2016-11-27T12:01:00.841Z"
+
+    markers.push();
 
     res.status(200).json({
       results: _.sortBy(results, d => new Date(d.timestamp)),
