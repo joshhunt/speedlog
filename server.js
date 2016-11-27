@@ -69,13 +69,18 @@ app.get('/results', function(req, res) {
 
     const markers = [
       {
-        timestamp: results.find(d => d._id === '583903393033b1001134f615').timestamp,
-        label: 'Speedlog created'
-      }, {
         timestamp: '2016-11-26T12:11:11.831Z',
         label: 'Restarted router'
       }
-    ]
+    ];
+
+    const firstResult = results.find(d => d._id === '583903393033b1001134f615');
+    if (firstResult) {
+      markers.push({
+        timestamp: firstResult.timestamp,
+        label: 'Speedlog created'
+      });
+    }
 
     res.status(200).json({
       results: _.sortBy(results, d => new Date(d.timestamp)),
