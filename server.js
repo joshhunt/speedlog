@@ -84,10 +84,6 @@ app.get('/results', function(req, res) {
       }
     ];
 
-    // "2016-11-27T12:01:00.841Z"
-
-    markers.push();
-
     res.status(200).json({
       results: _.sortBy(results, d => new Date(d.timestamp)),
       markers,
