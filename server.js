@@ -74,7 +74,7 @@ app.get('/results', function(req, res) {
       }
     ];
 
-    const firstResult = _.find(results, d => d._id.toString() === '583903393033b1001134f615');
+    const firstResult = _.find(results, d => d._id.valueOf() === '583903393033b1001134f615');
     if (firstResult) {
       markers.push({
         timestamp: firstResult.timestamp,
