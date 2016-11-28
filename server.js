@@ -54,9 +54,15 @@ app.get('/', (req, res) => {
 });
 
 app.post('/results', (req, res, next) => {
-  const newRecord = req.body;
+  const nr = req.body;
 
-  db.collection(RESULTS_COLLECTION).insertOne(newRecord, (err, doc) => {
+  if (!nr.download && !nr.upload && !nr.timestamp) {
+    res.status(500).json({
+      error: 'invalid',
+    });
+  }
+
+  db.collection(RESULTS_COLLECTION).insertOne(nr, (err, doc) => {
     if (err) { return next(err); }
 
     res.status(201).json(doc.ops[0]);
@@ -64,12 +70,17 @@ app.post('/results', (req, res, next) => {
 });
 
 const findResult = (results, id) => {
-  return _.find(results, d => d._id.toString() === id) || {};
+  return results.find(d => d._id.toString() === id) || {};
 }
 
 app.get('/results', function(req, res) {
-  db.collection(RESULTS_COLLECTION).find({}).toArray((err, results) => {
+  db.collection(RESULTS_COLLECTION).find({}).toArray((err, rawResults) => {
     if (err) { return next(err); }
+
+    const results = _(rawResults)
+      .filter(r => r.download && r.upload && r.timestamp)
+      .sortBy(r => new Date(r.timestamp))
+      .value();
 
     const markers = [
       {
@@ -84,10 +95,7 @@ app.get('/results', function(req, res) {
       }
     ];
 
-    res.status(200).json({
-      results: _.sortBy(results, d => new Date(d.timestamp)),
-      markers,
-    });
+    res.status(200).json({ results, markers });
   });
 });
 
