@@ -73,6 +73,13 @@ const findResult = (results, id) => {
   return results.find(d => d._id.toString() === id) || {};
 }
 
+function makeMarker(timestamp, label) {
+  return {
+    timestamp: timestamp.timestamp || timestamp,
+    label,
+  }
+}
+
 app.get('/results', function(req, res) {
   db.collection(RESULTS_COLLECTION).find({}).toArray((err, rawResults) => {
     if (err) { return next(err); }
@@ -83,16 +90,12 @@ app.get('/results', function(req, res) {
       .value();
 
     const markers = [
-      {
-        timestamp: findResult(results, '583903393033b1001134f615').timestamp,
-        label: 'Speedlog created'
-      }, {
-        timestamp: '2016-11-26T12:11:11.831Z',
-        label: 'Restarted router'
-      }, {
-        timestamp: findResult(results, '583acb0c5621b50011e2bcfa').timestamp,
-        label: 'Run every 10 mins'
-      }
+      makeMarker(findResult(results, '583903393033b1001134f615'), 'Speedlog created'),
+      // makeMarker('2016-11-26T12:11:11.831Z', 'Restarted router'),
+      makeMarker(findResult(results, '583acb0c5621b50011e2bcfa'), 'Run every 10 mins'),
+      makeMarker('2016-12-05T02:03:00.000Z', 'Called Exetel'),
+      makeMarker('2016-12-06T04:29:00.000Z', 'Sent diags email'),
+      makeMarker('2016-12-07T08:39:00.000Z', 'Email reply'),
     ];
 
     res.status(200).json({ results, markers });
