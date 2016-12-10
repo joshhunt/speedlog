@@ -101,7 +101,7 @@ app.get('/results', function(req, res) {
       makeMarker('2016-12-05T02:03:00.000Z', 'Called Exetel'),
       makeMarker('2016-12-06T04:29:00.000Z', 'Sent diags email'),
       makeMarker('2016-12-07T08:39:00.000Z', 'Email reply'),
-      makeMarker(findResults(results, '584bbc807cd63a0011c91c0e'), 'Every 30 mins'),
+      makeMarker(findResult(results, '584bbc807cd63a0011c91c0e'), 'Every 30 mins'),
     ];
 
     res.status(200).json({ results, markers });
