@@ -84,7 +84,7 @@ function view(req, res) {
   db.collection(RESULTS_COLLECTION).find({}).toArray((err, rawResults) => {
     if (err) { return next(err); }
 
-    console.log({query: req.query, params: req.params, parsedDays: parseInt(req.query.days)})
+    console.log(req)
 
     const daysLimit = parseInt(req.params.days) || 2;
     const limit = new Date();
