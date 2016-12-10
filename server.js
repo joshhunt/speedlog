@@ -94,7 +94,7 @@ function view(req, res) {
       .filter(r => r.download && r.upload && r.timestamp)
       .sortBy(r => new Date(r.timestamp))
       .filter(r => new Date(r.timestamp) > limit)
-      .each(r => delete r.server)
+      // .each(r => delete r.server)
       // .pick(['_id', 'download', 'upload', 'timestamp', 'ping'])
       .value();
 
