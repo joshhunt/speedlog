@@ -80,13 +80,13 @@ function makeMarker(timestamp, label) {
   }
 }
 
-app.get('/results', function(req, res) {
+function view(req, res) {
   db.collection(RESULTS_COLLECTION).find({}).toArray((err, rawResults) => {
     if (err) { return next(err); }
 
-    console.log({query: req.query, parsedDays: parseInt(req.query.days)})
+    console.log({query: req.query, params: req.params, parsedDays: parseInt(req.query.days)})
 
-    const daysLimit = parseInt(req.query.days) || 2;
+    const daysLimit = parseInt(req.params.days) || 2;
     const limit = new Date();
     limit.setDate(limit.getDate() - daysLimit);
 
@@ -94,7 +94,8 @@ app.get('/results', function(req, res) {
       .filter(r => r.download && r.upload && r.timestamp)
       .sortBy(r => new Date(r.timestamp))
       .filter(r => new Date(r.timestamp) > limit)
-      .pick(['_id', 'download', 'upload', 'timestamp', 'ping'])
+      .each(r => delete r.server)
+      // .pick(['_id', 'download', 'upload', 'timestamp', 'ping'])
       .value();
 
     const markers = [
@@ -109,7 +110,10 @@ app.get('/results', function(req, res) {
 
     res.status(200).json({ results, markers });
   });
-});
+}
+
+app.get('/results', view);
+app.get('/results/:days', view);
 
 app.post('/health', (req, res) => {
   console.log(req.body);
