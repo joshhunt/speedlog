@@ -84,9 +84,14 @@ app.get('/results', function(req, res) {
   db.collection(RESULTS_COLLECTION).find({}).toArray((err, rawResults) => {
     if (err) { return next(err); }
 
+    const daysLimit = parseInt(req.query.days) || 2;
+    const limit = new Date();
+    limit.setDate(limit.getDate() - daysLimit);
+
     const results = _(rawResults)
       .filter(r => r.download && r.upload && r.timestamp)
       .sortBy(r => new Date(r.timestamp))
+      .filter(r => new Date(r.timestamp) > limit)
       .value();
 
     const markers = [
