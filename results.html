@@ -41,9 +41,20 @@
       const round = n => Math.round(n * 100) / 100;
       const convert = n => round(n / 1000000);
 
-      const resultsUrl = (location.href.includes('file://') || location.href.includes('localhost'))
+      const params = window.location.search
+        .substring(1)
+        .split('&')
+        .reduce((acc, pair) => {
+          return Object.assign({}, acc, {
+            [pair.split('=')[0]]: pair.split('=')[1]
+          })
+        }, {});
+
+      const baseUrl = (location.href.includes('file://') || location.href.includes('localhost'))
         ? 'https://speedlog.herokuapp.com/results'
         : '/results';
+
+      const resultsUrl = baseUrl + '?days=' + params.days;
 
       d3.json(resultsUrl, function(data) {
         window.data = data;

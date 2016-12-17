@@ -86,7 +86,7 @@ function view(req, res) {
 
     console.log(req)
 
-    const daysLimit = parseInt(req.params.days) || 2;
+    const daysLimit = parseInt(req.query.days) || 7;
     const limit = new Date();
     limit.setDate(limit.getDate() - daysLimit);
 
