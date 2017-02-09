@@ -84,8 +84,6 @@ function view(req, res) {
   db.collection(RESULTS_COLLECTION).find({}).toArray((err, rawResults) => {
     if (err) { return next(err); }
 
-    console.log(req)
-
     const daysLimit = parseInt(req.query.days) || 7;
     const limit = new Date();
     limit.setDate(limit.getDate() - daysLimit);
@@ -116,6 +114,5 @@ app.get('/results', view);
 app.get('/results/:days', view);
 
 app.post('/health', (req, res) => {
-  console.log(req.body);
   res.status(200).send('ok');
 });

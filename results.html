@@ -54,7 +54,7 @@
         ? 'https://speedlog.herokuapp.com/results'
         : '/results';
 
-      const resultsUrl = baseUrl + '?days=' + params.days;
+      const resultsUrl = baseUrl + '?days=' + params.days || 14;
 
       d3.json(resultsUrl, function(data) {
         window.data = data;
