@@ -84,7 +84,7 @@ function view(req, res) {
   db.collection(RESULTS_COLLECTION).find({}).toArray((err, rawResults) => {
     if (err) { return next(err); }
 
-    let results = results = _(rawResults)
+    let results = _(rawResults)
         .filter(r => r.download && r.upload && r.timestamp)
         .sortBy(r => new Date(r.timestamp))
 
