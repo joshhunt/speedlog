@@ -89,6 +89,10 @@ function view(req, res) {
     limit.setDate(limit.getDate() - daysLimit);
 
     console.log('limit:', limit);
+    console.log('limit:', limit);
+    console.log('limit:', limit);
+    console.log('limit:', limit);
+    console.log('limit:', limit);
 
     const results = _(rawResults)
       .filter(r => r.download && r.upload && r.timestamp)
