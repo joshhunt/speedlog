@@ -84,23 +84,23 @@ function view(req, res) {
   db.collection(RESULTS_COLLECTION).find({}).toArray((err, rawResults) => {
     if (err) { return next(err); }
 
-    const daysLimit = parseInt(req.query.days) || 7;
-    const limit = new Date();
-    limit.setDate(limit.getDate() - daysLimit);
+    let results = results = _(rawResults)
+        .filter(r => r.download && r.upload && r.timestamp)
+        .sortBy(r => new Date(r.timestamp))
 
-    console.log('limit:', limit);
-    console.log('limit:', limit);
-    console.log('limit:', limit);
-    console.log('limit:', limit);
-    console.log('limit:', limit);
+    if (req.query.days) {
+      const daysLimit = parseInt(req.query.days, 10);
+      const daysBack = new Date();
+      daysBack.setDate(daysBack.getDate() - daysBack);
 
-    const results = _(rawResults)
-      .filter(r => r.download && r.upload && r.timestamp)
-      .sortBy(r => new Date(r.timestamp))
-      .filter(r => new Date(r.timestamp) > limit)
-      // .each(r => delete r.server)
-      // .pick(['_id', 'download', 'upload', 'timestamp', 'ping'])
-      .value();
+      results = results
+        .filter(r => new Date(r.timestamp) > daysBack)
+        .value();
+
+    } else {
+      const limitResults = parseInt(req.query.limit || '25', 10)
+      results = _.takeRight(results, limitResults);
+    }
 
     const markers = [
       makeMarker(findResult(results, '583903393033b1001134f615'), 'Speedlog created'),
